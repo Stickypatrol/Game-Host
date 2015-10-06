@@ -14,7 +14,7 @@ namespace Game_Host
         [STAThread]
         static void Main()
         {
-            using (var game = GameLogic.ActualGame2.start_game())
+            using (var game = AsteroidGame.GameWorld.start_game())
                 game.Run();
         }
     }

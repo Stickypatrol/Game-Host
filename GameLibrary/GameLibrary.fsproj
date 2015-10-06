@@ -35,9 +35,6 @@
     <DocumentationFile>bin\Release\GameLibrary.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Asteroid_Field_1">
-      <HintPath>..\..\Fsharp-stuff\Asteroid Field 1\Asteroid Field 1\bin\Debug\Asteroid_Field_1.exe</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -51,7 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.fs" />
-    <Compile Include="File1.fs" />
+    <Compile Include="Common.fs" />
+    <Compile Include="GameWorld.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
