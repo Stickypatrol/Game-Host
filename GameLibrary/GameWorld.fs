@@ -1,14 +1,22 @@
 ﻿namespace AsteroidGame
 module GameWorld = 
-    type MyGameState = { Ships : List<Math.Vector2<Math.m>> }
-    let initial_state = { Ships = [] }
+    open DrawContext
+    open Microsoft.Xna.Framework
+    open Microsoft.Xna.Framework.Graphics
+    open Common
+
+    type MyGameState = GameActors.AsteroidShooterWorld
+    let initial_state = GameActors.AsteroidShooterWorld.Inception
     let update (dt:float32) (state:MyGameState) : MyGameState =
-        printfn "updating"
-        failwith ""
+        //apply everything to the state and then return it
+        //state.Ships |> List.map actionstuff
         state
-        //update shit here
-    let draw (ctxt:Common.DrawContext) (state:MyGameState) =
+    let draw (ctxt:DrawContext) (state:MyGameState) =
         ()
-        //draw shit here
+    let load_context (game : Game) =    
+        {
+            SpriteBatch = new SpriteBatch(game.GraphicsDevice)
+            Asteroid = game.Content.Load "asteroid"
+        }
     let start_game() =
-        new Common.Game2D<MyGameState>(initial_state, update, draw)
+        new Common.Game2D<MyGameState>(initial_state, load_context, update, draw)

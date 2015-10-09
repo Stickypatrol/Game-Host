@@ -48,7 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.fs" />
+    <Compile Include="DrawContext.fs" />
     <Compile Include="Common.fs" />
+    <Compile Include="GameActors.fs" />
+    <Compile Include="GamePhysics.fs" />
     <Compile Include="GameWorld.fs" />
   </ItemGroup>
   <PropertyGroup>
