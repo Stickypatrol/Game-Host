@@ -7,4 +7,6 @@ type DrawContext =
         {
             SpriteBatch : SpriteBatch
             Asteroid    : Texture2D
+            Ship        : Texture2D
+            Star        : Texture2D
         }

@@ -4,19 +4,20 @@ module GameWorld =
     open Microsoft.Xna.Framework
     open Microsoft.Xna.Framework.Graphics
     open Common
+    open Math
 
-    type MyGameState = GameActors.AsteroidShooterWorld
-    let initial_state = GameActors.AsteroidShooterWorld.Inception
-    let update (dt:float32) (state:MyGameState) : MyGameState =
-        //apply everything to the state and then return it
-        //state.Ships |> List.map actionstuff
-        state
-    let draw (ctxt:DrawContext) (state:MyGameState) =
-        ()
-    let load_context (game : Game) =    
+    let dt = 0.016<s>
+
+    type MyGameState = GameActors.GameWorld
+    let initial_state = GameActors.GameWorld.Start
+    let update (dt:float32<s>) (state:MyGameState) : MyGameState = GameActors.WorldUpdate state dt
+    let draw (ctxt:DrawContext) (state:MyGameState) = GameActors.WorldDraw state ctxt
+    let load_context (game : Game) =
         {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice)
-            Asteroid = game.Content.Load "asteroid"
+            Asteroid = game.Content.Load<Texture2D>("asteroid")
+            Ship = game.Content.Load<Texture2D>("ship")
+            Star = game.Content.Load<Texture2D>("star1")
         }
     let start_game() =
         new Common.Game2D<MyGameState>(initial_state, load_context, update, draw)
