@@ -9,4 +9,6 @@ type DrawContext =
             Asteroid    : Texture2D
             Ship        : Texture2D
             Star        : Texture2D
+            Bullet      : Texture2D
+            Target      : Texture2D
         }

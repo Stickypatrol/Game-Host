@@ -11,7 +11,7 @@ module Math =
     type N = kg*m/s^2
 
 
-    type Vector2<[<Measure>] 'a> = {X: float32<'a>; Y: float32<'a>} 
+    type Vector2<[<Measure>] 'a> = {X: float32<'a>; Y: float32<'a>}
         with
         static member Zero : Vector2<'a> = { X = 0.0f<_>; Y = 0.0f<_> }
         static member (+) (v1:Vector2<'a>, v2:Vector2<'a>):Vector2<'a> = {X = v1.X + v2.X; Y = v1.Y + v2.Y}
