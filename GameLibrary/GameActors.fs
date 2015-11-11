@@ -7,6 +7,27 @@ module GameActors =
     open Math
     open GameInput
 
+   (* type Timer = Wait of float32
+    type Script = 
+      | CreateEnemiesFirstWave of int * Timer
+      | CreateFirstBoss
+      | WaitSecondWave of float32
+    type Action =
+      | CreateEnemy
+      | CreateBoss
+      | Nothing
+
+    let run_script dt s =
+      match s with
+      | CreateEnemiesFirstWave(0,t) ->
+        Nothing, CreateFirstBoss
+      | CreateEnemiesFirstWave(n,Wait(t)) when t > 0.0f ->
+        Nothing, CreateEnemiesFirstWave(n,Wait(t - dt))
+      | CreateEnemiesFirstWave(n,Wait(t)) ->
+        CreateEnemy, CreateEnemiesFirstWave(n-1,Wait(0.5f))
+      | ...*)
+        
+
     let rand = System.Random()
     let curKeyboard () = Keyboard.GetState()
     let curMouse () = Mouse.GetState()
@@ -55,13 +76,13 @@ module GameActors =
                 { z with Position = z.Position + (z.Velocity * dt) }
             static member Remove this w =
                 false
-            static member Zero (d_c : DrawContext)=
+            static member Zero =
                 let Move x_v y_v (ship:Ship) =
                   {ship with Velocity = ship.Velocity + {X = x_v; Y = y_v}}
                 {
                     Position = {X = 375.0f<m>; Y = 215.0f<m>};
                     Velocity = Vector2.Zero
-                    Dimensions = {X = (d_c.Star.Width |> float32) * 1.0f<m>;Y = (d_c.Star.Height|> float32) * 1.0f<m>}
+                    Dimensions = Vector2<m>.Zero
                     InputBehavior =
                         [
                         ] |> Map.ofList
@@ -106,13 +127,13 @@ module GameActors =
                         KeyboardInput(Keys.D,None), Move -5.0f<m/s> 0.0f<m/s>
                     ] |> Map.ofList
               }
-            static member Zero (d_c : DrawContext) =
+            static member Zero =
                 let Move x_v y_v (asteroid:Asteroid) =
                   {asteroid with Velocity = asteroid.Velocity + {X = x_v; Y = y_v}}
                 {
                     Position = {X = 120.0f<m>; Y = 100.0f<m>}
                     Velocity = Vector2.Zero
-                    Dimensions = {X = (d_c.Star.Width |> float32) * 1.0f<m>;Y = (d_c.Star.Height|> float32) * 1.0f<m>}
+                    Dimensions = Vector2<m>.Zero
                     InputBehavior =
                         [
                             KeyboardInput(Keys.W,None), Move 0.0f<m/s> 5.0f<m/s>
@@ -139,17 +160,19 @@ module GameActors =
               { z with Position = z.Position + (z.Velocity * dt)}
             static member Remove (this : Bullet) w =
               match (this.Position.X, this.Position.Y) with
-              | (x, y) when x > 900.0f<m> ->  true
-              | (x, y) when x < -100.0f<m> ->    true
-              | (x, y) when y > 580.0f<m> ->  true
-              | (x, y) when y < -100.0f<m> ->    true
+              | (x, y) when x > 900.0f<m> ->      true
+              | (x, y) when x < -100.0f<m> ->     true
+              | (x, y) when y > 580.0f<m> ->      true
+              | (x, y) when y < -100.0f<m> ->     true
               | (x, y) -> false
             static member Create () =
               let m_i = curMouse()
               if m_i.LeftButton = ButtonState.Pressed then 
                                           let Move x_v y_v (bullet:Bullet) =
-                                            {bullet with Velocity = bullet.Velocity + {X = x_v; Y = y_v}}
-                                          [{Bullet.Zero with Velocity = Vector2.Zero}] else []
+                                            {bullet with Velocity = Vector2.Zero}
+                                          [{Bullet.Zero with
+                                                Position = {X = 393.5f<m>;Y = 233.5f<m>};
+                                                Velocity = Bullet.BulletDirection()}] else []
             
             static member BulletDirection () = 
               let mousePos = {X = (curMouse().Position.X |> float32) * 1.0f<m/s>; Y = (curMouse().Position.Y |> float32) * 1.0f<m/s>}
@@ -175,13 +198,13 @@ module GameActors =
                         KeyboardInput(Keys.D,None), Move -5.0f<m/s> 0.0f<m/s>
                     ] |> Map.ofList
               }
-            static member Zero (d_c : DrawContext) =
+            static member Zero =
               let Move x_v y_v (bullet:Bullet) =
                 {bullet with Velocity = bullet.Velocity + {X = x_v; Y = y_v}}
               {
                 Position = Vector2.Zero
                 Velocity = Vector2.Zero
-                Dimensions = {X = (d_c.Star.Width |> float32) * 1.0f<m>;Y = (d_c.Star.Height|> float32) * 1.0f<m>}
+                Dimensions = Vector2<m>.Zero
                 InputBehavior =
                     [
                         KeyboardInput(Keys.W,None), Move 0.0f<m/s> 10.0f<m/s>
@@ -219,13 +242,13 @@ module GameActors =
               { w with Position = w.Position + w.Velocity * dt }
             static member Remove this w =
               false
-            static member Zero (d_c : DrawContext) =
+            static member Zero =
                 let Move x_v y_v (star:Star) =
                   {star with Velocity = star.Velocity + {X = x_v; Y = y_v}}
                 {
                     Position = {X = 800.0f<m>*(rand.NextDouble() |> float32) ; Y = 480.0f<m>*(rand.NextDouble() |> float32)}
                     Velocity = Vector2.Zero
-                    Dimensions = {X = (d_c.Star.Width |> float32) * 1.0f<m>;Y = (d_c.Star.Height|> float32) * 1.0f<m>}
+                    Dimensions = Vector2.Zero
                     InputBehavior =
                         [
                             KeyboardInput(Keys.W,None), Move 0.0f<m/s> 2.0f<m/s>
@@ -236,6 +259,7 @@ module GameActors =
                 }
             static member LoadSize (star : Star) (d_c : DrawContext) =
                 {star with Dimensions = {X = (d_c.Star.Width |> float32) * 1.0f<m>; Y = (d_c.Star.Height |> float32) * 1.0f<m>}}
+
     type Target = 
       {
         Position      : Vector2<m>
@@ -258,11 +282,11 @@ module GameActors =
             {this with Position = Target.TargetPosition ()}
           static member Remove this w =
             false
-          static member Zero (d_c : DrawContext) =
+          static member Zero =
             {
                 Position = Vector2.Zero
                 Velocity = Vector2.Zero
-                Dimensions = {X = (d_c.Target.Width |> float32) * 1.0f<m>;Y = (d_c.Target.Height|> float32) * 1.0f<m>}
+                Dimensions = Vector2<m>.Zero
                 InputBehavior =
                   [
                   ] |> Map.ofList
@@ -305,11 +329,11 @@ module GameActors =
             Targets   : Entities<Target, World>
             Control   : Controller
         }with
-            static member Start (d_c : DrawContext)=
+            static member Start =
                                 {
                                 Ships =
                                   {
-                                    EntityList = [Ship.Zero d_c]
+                                    EntityList = [Ship.Zero]
                                     LoadSize = Ship.LoadSize
                                     Update = Ship.Update
                                     Remove = Ship.Remove
@@ -317,7 +341,7 @@ module GameActors =
                                   }
                                 Asteroids =
                                   {
-                                    EntityList = [Asteroid.Zero d_c]
+                                    EntityList = [Asteroid.Zero]
                                     LoadSize = Asteroid.LoadSize
                                     Update = Asteroid.Update
                                     Remove = Asteroid.Remove
@@ -333,7 +357,7 @@ module GameActors =
                                   }
                                 Stars = 
                                   {
-                                    EntityList = [for x in 1 .. 15 -> Star.Zero d_c]
+                                    EntityList = [for x in 1 .. 15 -> Star.Zero]
                                     LoadSize = Star.LoadSize
                                     Update = Star.Update
                                     Remove = Star.Remove
@@ -341,7 +365,7 @@ module GameActors =
                                   }
                                 Targets =
                                   {
-                                    EntityList = [Target.Zero d_c]
+                                    EntityList = [Target.Zero]
                                     LoadSize = Target.LoadSize
                                     Update = Target.Update
                                     Remove = Target.Remove

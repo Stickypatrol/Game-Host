@@ -44,7 +44,7 @@ module GameInput =
           ((k_s.IsKeyDown(Keys.D)) ? (i_b,KeyboardInput(Keys.D, None))
           (fun x -> x))))
           elem
-    | MouseState(m_i) ->
+    | MouseState(m_i) -> 
         (m_i.LeftButton = ButtonState.Pressed) ? (i_b,MouseInput(MouseButtons.LeftButton, None))
           ((m_i.RightButton = ButtonState.Pressed) ? (i_b,MouseInput(MouseButtons.RightButton, None))
           (fun x -> x))
